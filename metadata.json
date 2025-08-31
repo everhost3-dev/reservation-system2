@@ -1,0 +1,5 @@
+{
+  "name": "Study Room Reservation System",
+  "description": "A web application for booking seats in a study room, integrated with Google Sheets for data management. It supports student reservations, check-ins, and an admin dashboard.",
+  "requestFramePermissions": []
+}
