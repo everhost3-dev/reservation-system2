@@ -3,7 +3,7 @@ import { TimeSlot } from './types';
 
 export const ADMIN_PASSWORD = 'teacher2024';
 export const CHECKIN_PASSWORD = 'checkin123';
-export const GOOGLE_SCRIPT_URL = '여기에_1단계에서_복사한_새_URL을_붙여넣으세요';
+export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6tpr6B4D5a-Q3nWlDrY5kLAgvKWzDlZRJ8sjx5eWo9blC-7ACOJgGC73EkGgytT5_/exec';
 
 export const LOCATIONS = ['스터디룸', '영글터 집중학습실', '영글터 자율학습실', '채움터'];
 

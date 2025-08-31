@@ -74,7 +74,7 @@ const App: React.FC = () => {
                 {renderView()}
             </main>
             <footer className="text-center text-xs text-gray-400 dark:text-gray-500 py-4">
-                Study Room Reservation System v2.4
+                Study Room Reservation System v2.5
             </footer>
         </div>
     );

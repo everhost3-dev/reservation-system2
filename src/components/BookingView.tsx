@@ -106,6 +106,7 @@ const BookingView: React.FC<BookingViewProps> = ({ setView, darkMode, setDarkMod
         if (!isStudyRoom && isSeatAlreadyTaken) {
             setBookingResult({ success: false, message: '선택하신 좌석이 이미 예약되어 있습니다.', reason: '좌석 중복' });
             setIsLoading(false);
+            loadTodayReservations(true); // Silently refresh reservations
             return;
         }
         
@@ -127,12 +128,19 @@ const BookingView: React.FC<BookingViewProps> = ({ setView, darkMode, setDarkMod
             formData.seat || (isStudyRoom ? '팀룸' : 'N/A'),
             selectedTimeSlot?.label,
             reservationId,
-            new Date().toLocaleString('ko-KR'),
+            new Date().toISOString(),
             teamMembersString
         ];
         
         try {
-            await googleScriptService.saveReservation(sheetsData);
+            const res = await googleScriptService.saveReservation(sheetsData);
+            if (res.success === false && res.reason === 'duplicate') {
+                 setBookingResult({ success: false, message: '선택하신 좌석이 방금 예약되었습니다. 다른 좌석을 선택해주세요.', reason: '좌석 중복' });
+                 loadTodayReservations(true); // Refresh reservations to show the latest state
+                 setIsLoading(false);
+                 return;
+            }
+
             const newReservation = { ...formData, reservationId, timestamp: new Date().toISOString(), timeSlot: selectedTimeSlot!.label, teamMembers: validTeamMembers };
             setTodayReservations(prev => [...prev, newReservation]);
 
@@ -142,7 +150,7 @@ const BookingView: React.FC<BookingViewProps> = ({ setView, darkMode, setDarkMod
                 success: true, message: successMessage, reason: '정상 처리',
                 reservationId, details: { ...newReservation, time: selectedTimeSlot!.time }
             });
-            setFormData(prev => ({ ...prev, location: '', seat: '', timeSlot: '', studentId: '', name: '', teamMembers: Array(5).fill({ studentId: '', name: '' }) }));
+            setFormData({ location: '', seat: '', timeSlot: '', studentId: '', name: '', date: new Date().toISOString().split('T')[0], teamMembers: Array(5).fill({ studentId: '', name: '' }) });
         } catch (error) {
             setBookingResult({ success: false, message: '예약 중 오류가 발생했습니다.', reason: '서버 오류' });
         } finally {
@@ -193,7 +201,7 @@ const BookingView: React.FC<BookingViewProps> = ({ setView, darkMode, setDarkMod
                     <div>
                         <div className="font-medium">현재 시각: {currentTime.toLocaleTimeString('ko-KR')}</div>
                         <div className="text-sm mt-1">{timeRestrictionMessage ? `${timeRestrictionMessage.message} ${timeRestrictionMessage.detail}` : '각 시간대는 시작 10분 전까지 예약 가능합니다.'}</div>
-                        {isLoadingReservations && <div className="text-sm mt-2 flex items-center gap-2"><Spinner/>예약 현황 로딩 중...</div>}
+                        {isLoadingReservations && <div className="text-sm mt-2 flex items-center gap-2"><Spinner colorClass="border-current"/>예약 현황 로딩 중...</div>}
                     </div>
                 </div>
             </div>

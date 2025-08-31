@@ -83,15 +83,18 @@ const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ onLogout }) => 
                 att.action === 'checkout' && new Date(att.timestamp) > new Date(checkIn.timestamp)
             );
 
+            let points = 0;
+            if (timeSlotInfo.id === 'study1' || timeSlotInfo.id === 'study2') {
+                points = 2; // Base points for check-in
+            } else if (timeSlotInfo.id === 'lunch' || timeSlotInfo.id === 'dinner') {
+                points = 1; // Base points for check-in
+            }
+
             if (!checkOut) {
-                 let points = 0;
-                 if (timeSlotInfo.id === 'study1' || timeSlotInfo.id === 'study2') {
-                     points = 2;
-                 }
                 return {
                     ...res, status: 'In-Progress',
                     checkinTime: new Date(checkIn.timestamp).toLocaleTimeString('ko-KR'),
-                    mileagePoints: points
+                    mileagePoints: points 
                 };
             }
 

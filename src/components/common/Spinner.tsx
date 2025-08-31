@@ -4,9 +4,9 @@ interface SpinnerProps {
     colorClass?: string;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ colorClass }) => {
+const Spinner: React.FC<SpinnerProps> = ({ colorClass = 'border-current' }) => {
     return (
-        <div className={`animate-spin rounded-full h-5 w-5 border-b-2 ${colorClass || 'border-current'}`}></div>
+        <div className={`animate-spin rounded-full h-5 w-5 border-b-2 ${colorClass}`}></div>
     );
 };
 

@@ -76,13 +76,14 @@ const CheckinView: React.FC<CheckinViewProps> = ({ onExit }) => {
         }
 
         setIsLoading(true);
+        const now = new Date();
         const sheetsData = [
-            new Date().toLocaleDateString('ko-KR'),
+            now.toISOString().split('T')[0], // YYYY-MM-DD date format
             checkInData.studentId,
             checkInData.name,
             action === 'checkin' ? '체크인' : '체크아웃',
-            new Date().toLocaleTimeString('ko-KR'),
-            '자기주도학습실'
+            now.toLocaleTimeString('en-GB'), // HH:MM:SS 24-hour format
+            '자기주도학습실' // This can be made dynamic if needed in the future
         ];
 
         try {

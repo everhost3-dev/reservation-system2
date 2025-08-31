@@ -1,10 +1,11 @@
 import { GOOGLE_SCRIPT_URL } from '../constants';
-import { Reservation, AttendanceRecord, StudyRecord, MileageSummary } from '../types';
+import { Reservation, AttendanceRecord } from '../types';
 
 async function postToAction(action: string, data: object): Promise<any> {
     try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
+            redirect: 'follow', // Explicitly follow redirects to handle Google Script's behavior.
             headers: {
                 // Use text/plain to avoid CORS preflight request which can fail with Google Scripts
                 'Content-Type': 'text/plain;charset=utf-8',
@@ -54,8 +55,4 @@ export const saveAttendance = async (sheetsData: (string|number)[]): Promise<any
 export const getFullData = async (): Promise<{ reservations: Reservation[], attendance: AttendanceRecord[] }> => {
     const result = await postToAction('getFullData', {});
     return result.success ? { reservations: result.reservations || [], attendance: result.attendance || [] } : { reservations: [], attendance: [] };
-};
-
-export const exportDataToSheets = async (data: { daily: StudyRecord[], mileage: MileageSummary[] }): Promise<any> => {
-    return await postToAction('exportDataToSheets', { data });
 };
